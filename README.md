@@ -32,6 +32,8 @@ A lightweight real-estate CRM for capturing property enquiries and keeping follo
 
 3. Apply [`supabase/migrations/20260913211511_create_clients.sql`](supabase/migrations/20260913211511_create_clients.sql) to your Supabase project.
 
+   The migration is safely rerunnable. If the table already exists from an earlier SQL Editor run, it preserves existing records, adds any missing fields, and refreshes the access policies.
+
 4. Start the development server:
 
    ```bash
