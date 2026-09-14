@@ -13,8 +13,9 @@ export default async function CrmLayout({ children }: { children: React.ReactNod
           <span>crm for me</span>
         </Link>
         <nav>
-          <Link href="/dashboard">Clients</Link>
-          <Link href="/clients/new">Add client</Link>
+          <p className="nav-label">Workspace</p>
+          <Link href="/dashboard"><span className="nav-icon">◉</span>Clients</Link>
+          <Link href="/clients/new"><span className="nav-icon">＋</span>Add client</Link>
         </nav>
         <form action={logoutAction} className="logout-form">
           <button className="nav-button" type="submit">Log out</button>
