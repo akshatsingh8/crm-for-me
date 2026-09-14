@@ -13,10 +13,10 @@ export default async function LoginPage({
   return (
     <main className="login-page">
       <section className="login-card">
-        <div className="brand-mark">C</div>
-        <p className="eyebrow">crm for me</p>
-        <h1>Welcome back</h1>
-        <p className="muted">Sign in to manage your properties, leads, and follow-ups.</p>
+        <div className="login-brand"><div className="brand-mark">C</div><span>crm for me</span></div>
+        <p className="eyebrow">Welcome back</p>
+        <h1>Your leads, in one place.</h1>
+        <p className="muted">Sign in to manage client enquiries and follow-ups with clarity.</p>
 
         <form action={loginAction} className="form-stack">
           <label>

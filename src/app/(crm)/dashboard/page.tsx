@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { getSupabase, type ClientRecord } from "@/lib/supabase";
+import { updateClientStatusAction } from "../actions";
+import { DeleteLeadButton } from "./delete-lead-button";
 
 export const dynamic = "force-dynamic";
 
@@ -24,9 +26,9 @@ function formatBudget(min: number | null, max: number | null) {
 export default async function DashboardPage({
   searchParams,
 }: {
-  searchParams: Promise<{ created?: string }>;
+  searchParams: Promise<{ created?: string; updated?: string; deleted?: string; error?: string }>;
 }) {
-  const { created } = await searchParams;
+  const { created, updated, deleted, error: actionError } = await searchParams;
   const { data, error } = await getSupabase()
     .from("real_estate_clients")
     .select("*")
@@ -45,6 +47,9 @@ export default async function DashboardPage({
       </header>
 
       {created ? <div className="notice success">Real estate lead added successfully.</div> : null}
+      {updated ? <div className="notice success">Lead updated successfully.</div> : null}
+      {deleted ? <div className="notice success">Lead deleted successfully.</div> : null}
+      {actionError ? <div className="notice error"><strong>Could not update lead.</strong> {actionError}</div> : null}
       {error ? (
         <div className="notice error">
           <strong>Could not load clients.</strong> {error.message}
@@ -72,18 +77,32 @@ export default async function DashboardPage({
         ) : (
           <div className="table-scroll">
             <table>
-              <thead><tr><th>Client</th><th>Requirement</th><th>Location</th><th>Budget</th><th>Follow-up</th><th>Source</th><th>Status</th><th>Notes</th></tr></thead>
+              <thead><tr><th>Client</th><th>Requirement</th><th>Location</th><th>Budget</th><th>Follow-up</th><th>Source</th><th>Status</th><th>Notes</th><th>Actions</th></tr></thead>
               <tbody>
                 {clients.map((client) => (
                   <tr key={client.id}>
-                    <td><strong>{client.name}</strong><small>{client.phone}{client.email ? ` · ${client.email}` : ""}</small></td>
+                    <td><Link className="lead-link" href={`/clients/${client.id}`}><strong>{client.name}</strong><small>{client.phone}{client.email ? ` · ${client.email}` : ""}</small></Link></td>
                     <td><strong>{client.requirement || "Not specified"}</strong><small>{client.property_type || "Property type pending"}{client.property_project ? ` · ${client.property_project}` : ""}</small></td>
                     <td>{client.preferred_location || "—"}</td>
                     <td className="budget-cell">{formatBudget(client.budget_min, client.budget_max)}</td>
                     <td>{formatDate(client.follow_up_date)}{client.lead_temperature ? <small>{client.lead_temperature} lead</small> : null}</td>
                     <td>{client.lead_source || "—"}</td>
-                    <td>{client.status ? <span className={`status status-${client.status.toLowerCase().replace(" ", "-")}`}>{client.status}</span> : "—"}</td>
+                    <td>
+                      <form action={updateClientStatusAction} className="status-control">
+                        <input type="hidden" name="id" value={client.id} />
+                        <select name="status" defaultValue={client.status ?? "New"} aria-label={`Update status for ${client.name}`}>
+                          <option>New</option><option>Contacted</option><option>Site visit</option><option>Negotiation</option><option>Closed won</option><option>Closed lost</option>
+                        </select>
+                        <button className="text-button" type="submit">Set</button>
+                      </form>
+                    </td>
                     <td className="notes-cell">{client.notes || "—"}</td>
+                    <td>
+                      <div className="row-actions">
+                        <Link className="text-button" href={`/clients/${client.id}?edit=1`}>Edit</Link>
+                        <DeleteLeadButton id={client.id} name={client.name} />
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>
