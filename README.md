@@ -30,9 +30,9 @@ A lightweight real-estate CRM for capturing property enquiries and keeping follo
 
 2. Copy `.env.example` to `.env.local` and provide every value.
 
-3. Apply [`supabase/migrations/20260913211511_create_clients.sql`](supabase/migrations/20260913211511_create_clients.sql) to your Supabase project.
+3. Apply the SQL files in [`supabase/migrations`](supabase/migrations) to your Supabase project in filename order.
 
-   The migration is safely rerunnable. If the table already exists from an earlier SQL Editor run, it preserves existing records, adds any missing fields, and refreshes the access policies.
+   The migrations preserve existing records, reconcile tables left by earlier SQL Editor runs, and make every lead-detail field optional. If the CRM was set up before optional fields were introduced, also run [`20260914060211_make_client_details_optional.sql`](supabase/migrations/20260914060211_make_client_details_optional.sql) in the Supabase SQL Editor.
 
 4. Start the development server:
 
