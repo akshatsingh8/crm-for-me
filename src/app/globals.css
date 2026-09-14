@@ -43,6 +43,8 @@ input:focus, textarea:focus, select:focus { border-color: var(--green); box-shad
 .button:hover { transform: translateY(-1px); }
 .button-primary { color: white; background: var(--green); }
 .button-primary:hover { background: var(--green-dark); }
+.button-danger { color: white; background: var(--red); margin-right: auto; }
+.button-danger:hover { background: #8f1711; }
 .button-secondary { color: var(--green); background: var(--green-soft); }
 .button-ghost { color: var(--muted); border-color: var(--line); background: white; }
 .button-wide { width: 100%; margin-top: 4px; }
@@ -79,7 +81,9 @@ td { padding: 17px 18px; border-bottom: 1px solid #edf0f5; vertical-align: top; 
 tbody tr:last-child td { border-bottom: 0; }
 tbody tr:hover { background: #fafcff; }
 td small { display: block; margin-top: 5px; color: var(--muted); }
-.lead-link { display: block; color: inherit; }
+.client-cell { padding: 0; }
+.lead-link { display: block; min-width: 190px; padding: 17px 18px; color: inherit; }
+.lead-link span { display: block; margin-top: 9px; color: var(--green); font-size: 11px; font-weight: 750; }
 .lead-link:hover strong { color: var(--green); }
 .lead-link:hover small { color: var(--ink); }
 .budget-cell { white-space: nowrap; }

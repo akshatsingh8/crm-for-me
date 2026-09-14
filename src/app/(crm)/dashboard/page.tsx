@@ -81,7 +81,7 @@ export default async function DashboardPage({
               <tbody>
                 {clients.map((client) => (
                   <tr key={client.id}>
-                    <td><Link className="lead-link" href={`/clients/${client.id}`}><strong>{client.name}</strong><small>{client.phone}{client.email ? ` · ${client.email}` : ""}</small></Link></td>
+                    <td className="client-cell"><Link className="lead-link" href={`/clients/${client.id}`}><strong>{client.name}</strong><small>{client.phone}{client.email ? ` · ${client.email}` : ""}</small><span>View profile →</span></Link></td>
                     <td><strong>{client.requirement || "Not specified"}</strong><small>{client.property_type || "Property type pending"}{client.property_project ? ` · ${client.property_project}` : ""}</small></td>
                     <td>{client.preferred_location || "—"}</td>
                     <td className="budget-cell">{formatBudget(client.budget_min, client.budget_max)}</td>

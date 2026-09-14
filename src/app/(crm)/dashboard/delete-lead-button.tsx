@@ -15,3 +15,19 @@ export function DeleteLeadButton({ id, name }: { id: number; name: string }) {
     </form>
   );
 }
+
+export function DeleteLeadFormAction({ name }: { name: string }) {
+  return (
+    <button
+      className="button button-danger"
+      type="submit"
+      formAction={deleteClientAction}
+      formNoValidate
+      onClick={(event) => {
+        if (!window.confirm(`Delete ${name}? This cannot be undone.`)) event.preventDefault();
+      }}
+    >
+      Delete lead
+    </button>
+  );
+}

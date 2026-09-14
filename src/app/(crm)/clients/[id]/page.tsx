@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { updateClientAction } from "../../actions";
+import { DeleteLeadFormAction } from "../../dashboard/delete-lead-button";
 import { getSupabase, type ClientRecord } from "@/lib/supabase";
 
 export default async function EditClientPage({
@@ -94,6 +95,7 @@ export default async function EditClientPage({
           <label className="field-full">Notes <textarea name="notes" rows={4} defaultValue={client.notes ?? ""} /></label>
         </div>
         <div className="form-actions">
+          <DeleteLeadFormAction name={client.name} />
           <Link className="button button-ghost" href="/dashboard">Cancel</Link>
           <button className="button button-primary" type="submit">Save changes</button>
         </div>
