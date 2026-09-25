@@ -3,8 +3,8 @@ import { buildDashboardMetrics, PROPERTY_TYPES } from "@/lib/dashboard-metrics";
 
 type Metrics = ReturnType<typeof buildDashboardMetrics>;
 
-const sourceColors = ["#1769c2", "#4d93dc", "#84b8e9", "#2bb3a3", "#f3b35f", "#8775ca", "#94a3b8"];
-const stageColors = ["#1d7ed0", "#509de3", "#76b7e8", "#9c8ddd", "#25a890", "#c6ced8"];
+const sourceColors = ["#176252", "#5c927e", "#a9c6b5", "#b5996d", "#87999b", "#7a8a6c", "#c4ccc5"];
+const stageColors = ["#176252", "#4d8872", "#88b09a", "#b5996d", "#6e8b85", "#c4ccc5"];
 
 function TrendChart({ months }: { months: Metrics["months"] }) {
   const max = Math.max(1, ...months.map((month) => month.count));
@@ -22,16 +22,16 @@ function TrendChart({ months }: { months: Metrics["months"] }) {
       <svg viewBox="0 0 760 225" role="img" aria-label={"New leads by month: " + months.map((month) => month.label + " " + month.count).join(", ")}>
         <defs>
           <linearGradient id="lead-trend-fill" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="#1378d1" stopOpacity=".23" />
-            <stop offset="100%" stopColor="#1378d1" stopOpacity=".015" />
+            <stop offset="0%" stopColor="#176252" stopOpacity=".18" />
+            <stop offset="100%" stopColor="#176252" stopOpacity=".01" />
           </linearGradient>
         </defs>
-        {[55, 106, 157, 207].map((y) => <line key={y} x1="34" x2="724" y1={y} y2={y} stroke="#e6edf5" strokeDasharray="4 6" />)}
+        {[55, 106, 157, 207].map((y) => <line key={y} x1="34" x2="724" y1={y} y2={y} stroke="#e5ebe6" strokeDasharray="4 6" />)}
         <path d={area} fill="url(#lead-trend-fill)" />
-        <path d={line} fill="none" stroke="#1378d1" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d={line} fill="none" stroke="#176252" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
         {points.map((point) => (
           <g key={point.label}>
-            <circle cx={point.x} cy={point.y} r="6.5" fill="#fff" stroke="#1378d1" strokeWidth="3" />
+            <circle cx={point.x} cy={point.y} r="6" fill="#fff" stroke="#176252" strokeWidth="2.5" />
             <title>{point.label + ": " + point.count + " new leads"}</title>
           </g>
         ))}
@@ -51,7 +51,7 @@ function SourcesChart({ sources, total }: { sources: Metrics["sources"]; total: 
       position += (source.count / total) * 100;
       return sourceColors[index % sourceColors.length] + " " + start + "% " + position + "%";
     }).join(", ") + ")"
-    : "#e8eef6";
+    : "#e8eeea";
 
   return (
     <div className="source-layout">
@@ -188,8 +188,8 @@ export function DashboardOverview({ metrics, error }: { metrics: Metrics; error:
                 <tr key={row.requirement}><th scope="row">{row.requirement}</th>{row.cells.map((cell) => {
                   const strength = cell.count / maxMatrixCount;
                   return <td key={cell.propertyType}><span title={row.requirement + " / " + cell.propertyType + ": " + cell.count} style={{
-                    backgroundColor: cell.count ? "rgba(20, 119, 206, " + (0.14 + strength * 0.74) + ")" : "#f3f6fa",
-                    color: strength > 0.55 ? "#fff" : "#24415f",
+                    backgroundColor: cell.count ? "rgba(23, 98, 82, " + (0.14 + strength * 0.74) + ")" : "#f1f5f1",
+                    color: strength > 0.55 ? "#fff" : "#29443a",
                   }}>{cell.count}</span></td>;
                 })}</tr>
               ))}</tbody>
