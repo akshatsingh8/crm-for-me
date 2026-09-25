@@ -355,7 +355,7 @@ td small { display: block; margin-top: 5px; color: var(--muted); }
   .sidebar { flex-wrap: wrap; }
   .sidebar nav { order: 3; width: 100%; flex-wrap: wrap; overflow: visible; }
   .sidebar nav a { flex: none; padding: 0 10px; }
-  .brand span:last-child { display: none; }
+  .brand > .brand-copy { display: grid; }
   .page-header { display: grid; }
   .page-header .button { width: 100%; }
   .header-actions { display: grid; }
@@ -474,7 +474,7 @@ tbody tr:hover { background: #f9fbf9; }
 @media (max-width: 620px) {
   .sidebar { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px 12px; padding: 10px 16px 0; }
   .brand { grid-column: 1; grid-row: 1; margin: 0; font-size: 15px; }
-  .brand span:last-child { display: inline; }
+  .brand > .brand-copy { display: grid; }
   .logout-form { grid-column: 2; grid-row: 1; margin: 0; }
   .nav-button { min-height: 36px; width: auto; padding: 0 10px; font-size: 12px; }
   .sidebar nav { grid-column: 1 / -1; grid-row: 2; order: 0; width: calc(100% + 32px); margin: 0 -16px; padding: 0 12px; display: flex; flex-wrap: nowrap; gap: 2px; overflow-x: auto; overscroll-behavior-x: contain; }
