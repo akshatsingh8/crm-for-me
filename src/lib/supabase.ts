@@ -26,7 +26,7 @@ export type ClientRecord = {
 export type LeadActivity = {
   id: number;
   lead_id: number;
-  kind: "call" | "whatsapp" | "note" | "status_change";
+  kind: "call" | "whatsapp" | "note" | "status_change" | "site_visit" | "follow_up";
   outcome: string | null;
   details: string | null;
   occurred_at: string;

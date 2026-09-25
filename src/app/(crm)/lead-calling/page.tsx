@@ -26,6 +26,8 @@ function formatCallTime(value: string | null) {
 function activityTitle(activity: CallingLead["lead_activities"][number]) {
   if (activity.kind === "call") return `Call · ${activity.outcome ?? "Logged"}`;
   if (activity.kind === "whatsapp") return "WhatsApp conversation";
+  if (activity.kind === "site_visit") return `Site visit · ${activity.outcome ?? "Logged"}`;
+  if (activity.kind === "follow_up") return `Follow-up · ${activity.outcome ?? "Logged"}`;
   if (activity.kind === "status_change") return "Lead status updated";
   return "Note added";
 }

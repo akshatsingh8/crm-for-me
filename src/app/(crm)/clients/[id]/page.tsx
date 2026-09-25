@@ -90,7 +90,7 @@ export default async function EditClientPage({
                 <div className="activity-dot" aria-hidden="true" />
                 <div className="activity-entry">
                   <div className="activity-entry-heading">
-                    <strong>{activity.kind === "call" ? `Call · ${activity.outcome}` : activity.kind === "whatsapp" ? "WhatsApp conversation" : activity.kind === "status_change" ? "Lead status updated" : "Note added"}</strong>
+                    <strong>{activity.kind === "call" ? `Call · ${activity.outcome}` : activity.kind === "whatsapp" ? "WhatsApp conversation" : activity.kind === "site_visit" ? `Site visit · ${activity.outcome ?? "Logged"}` : activity.kind === "follow_up" ? `Follow-up · ${activity.outcome ?? "Logged"}` : activity.kind === "status_change" ? "Lead status updated" : "Note added"}</strong>
                     <time dateTime={activity.occurred_at}>{formatActivityTime(activity.occurred_at)}</time>
                   </div>
                   {activity.details ? <p>{activity.details}</p> : null}

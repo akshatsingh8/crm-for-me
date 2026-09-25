@@ -59,22 +59,47 @@ export async function recordLeadCallAction(input: CallInput): Promise<Result> {
 
 export async function recordLeadActivityAction(input: {
   leadId: number;
-  kind: "whatsapp" | "note";
+  kind: "whatsapp" | "note" | "site_visit" | "follow_up";
   details: string;
+  outcome?: string;
+  occurredAt?: string;
 }): Promise<Result> {
   await requireAuth();
   if (!input || typeof input.details !== "string") return { error: "Invalid lead activity." };
   const details = input.details.trim();
-  if (!validId(input.leadId) || !["whatsapp", "note"].includes(input.kind)) {
+  if (!validId(input.leadId) || !["whatsapp", "note", "site_visit", "follow_up"].includes(input.kind)) {
     return { error: "Invalid lead activity." };
   }
   if (!details) return { error: "Add a short summary before saving." };
   if (details.length > 5000) return { error: "Keep the summary under 5,000 characters." };
 
+  const outcome = input.kind === "site_visit"
+    ? input.outcome
+    : input.kind === "follow_up" ? input.outcome : null;
+  if (input.kind === "site_visit" && !["Scheduled", "Completed"].includes(outcome ?? "")) {
+    return { error: "Choose whether the site visit is scheduled or completed." };
+  }
+  if (input.kind === "follow_up" && !["Completed", "Attempted"].includes(outcome ?? "")) {
+    return { error: "Choose a valid follow-up result." };
+  }
+
+  let occurredAt: string | undefined;
+  if (input.kind === "site_visit") {
+    if (!input.occurredAt || typeof input.occurredAt !== "string") return { error: "Choose a site visit date and time." };
+    const visitTime = new Date(input.occurredAt);
+    if (Number.isNaN(visitTime.getTime())) return { error: "Choose a valid site visit date and time." };
+    if (outcome === "Completed" && visitTime.getTime() > Date.now() + 5 * 60 * 1000) {
+      return { error: "A completed visit cannot be in the future." };
+    }
+    occurredAt = visitTime.toISOString();
+  }
+
   const { error } = await getSupabase().from("lead_activities").insert({
     lead_id: input.leadId,
     kind: input.kind,
     details,
+    outcome,
+    ...(occurredAt ? { occurred_at: occurredAt } : {}),
   });
   if (error) return { error: error.message };
 
