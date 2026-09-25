@@ -43,6 +43,7 @@ export async function createClientAction(formData: FormData) {
 
   revalidatePath("/dashboard");
   revalidatePath("/clients");
+  revalidatePath("/lead-calling");
   redirect("/clients?created=1");
 }
 
@@ -88,6 +89,8 @@ export async function updateClientAction(formData: FormData) {
 
   revalidatePath("/dashboard");
   revalidatePath("/clients");
+  revalidatePath("/lead-calling");
+  revalidatePath(`/clients/${id}`);
   redirect("/clients?updated=1");
 }
 
@@ -103,6 +106,8 @@ export async function updateClientStatusAction(formData: FormData) {
 
   revalidatePath("/dashboard");
   revalidatePath("/clients");
+  revalidatePath("/lead-calling");
+  revalidatePath(`/clients/${id}`);
   redirect("/clients?updated=1");
 }
 
@@ -116,5 +121,6 @@ export async function deleteClientAction(formData: FormData) {
 
   revalidatePath("/dashboard");
   revalidatePath("/clients");
+  revalidatePath("/lead-calling");
   redirect("/clients?deleted=1");
 }

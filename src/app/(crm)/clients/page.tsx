@@ -2,6 +2,7 @@ import Link from "next/link";
 import { loadAllLeads } from "@/lib/lead-data";
 import { updateClientStatusAction } from "../actions";
 import { DeleteLeadButton } from "../dashboard/delete-lead-button";
+import { LeadContactButtons } from "../lead-calling/lead-contact-buttons";
 
 export const dynamic = "force-dynamic";
 
@@ -107,6 +108,7 @@ export default async function ClientsPage({
                     <td className="notes-cell">{client.notes || "—"}</td>
                     <td>
                       <div className="row-actions">
+                        <LeadContactButtons leadId={client.id} name={client.name} phone={client.phone} currentStatus={client.status} />
                         <Link className="text-button" href={`/clients/${client.id}?edit=1`}>Edit</Link>
                         <DeleteLeadButton id={client.id} name={client.name} />
                       </div>

@@ -2,7 +2,16 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { updateClientAction } from "../../actions";
 import { DeleteLeadFormAction } from "../../dashboard/delete-lead-button";
-import { getSupabase, type ClientRecord } from "@/lib/supabase";
+import { getSupabase, type ClientRecord, type LeadActivity } from "@/lib/supabase";
+import { LeadContactButtons } from "../../lead-calling/lead-contact-buttons";
+import { ActivityNoteForm } from "../../lead-calling/activity-note-form";
+
+function formatActivityTime(value: string) {
+  return new Intl.DateTimeFormat("en-IN", {
+    day: "numeric", month: "short", year: "numeric", hour: "numeric", minute: "2-digit",
+    timeZone: "Asia/Kolkata",
+  }).format(new Date(value));
+}
 
 export default async function EditClientPage({
   params,
@@ -15,11 +24,13 @@ export default async function EditClientPage({
   const id = Number(idParam);
   if (!Number.isSafeInteger(id) || id <= 0) notFound();
 
-  const [{ data, error: loadError }, { error, edit }] = await Promise.all([
+  const [{ data, error: loadError }, { data: activityData, error: activityError }, { error, edit }] = await Promise.all([
     getSupabase().from("real_estate_clients").select("*").eq("id", id).maybeSingle(),
+    getSupabase().from("lead_activities").select("*").eq("lead_id", id).order("occurred_at", { ascending: false }).order("id", { ascending: false }),
     searchParams,
   ]);
   const client = data as ClientRecord | null;
+  const activities = (activityData ?? []) as LeadActivity[];
   if (loadError || !client) notFound();
 
   if (edit !== "1") {
@@ -48,7 +59,10 @@ export default async function EditClientPage({
               <h1>{client.name}</h1>
               <p className="muted">{client.phone}{client.email ? ` · ${client.email}` : ""}</p>
             </div>
-            <Link className="button button-primary" href={`/clients/${client.id}?edit=1`}>Edit lead</Link>
+            <div className="profile-actions">
+              <LeadContactButtons leadId={client.id} name={client.name} phone={client.phone} currentStatus={client.status} />
+              <Link className="button button-secondary" href={`/clients/${client.id}?edit=1`}>Edit lead</Link>
+            </div>
           </header>
           <div className="profile-details">
             {details.map(([label, value]) => (
@@ -62,6 +76,35 @@ export default async function EditClientPage({
             <span>Notes</span>
             <p>{client.notes || "No notes added yet."}</p>
           </div>
+        </section>
+        <section className="activity-section" aria-label="Lead activity timeline">
+          <div className="activity-heading">
+            <div><p className="eyebrow">Lead history</p><h2>Activity timeline</h2></div>
+            <span>{activities.length + 1} {activities.length === 0 ? "event" : "events"}</span>
+          </div>
+          {activityError ? <div className="notice error"><strong>Could not load activity.</strong> {activityError.message}</div> : null}
+          <ActivityNoteForm leadId={client.id} />
+          <ol className="activity-timeline">
+            {activities.map((activity) => (
+              <li key={activity.id}>
+                <div className="activity-dot" aria-hidden="true" />
+                <div className="activity-entry">
+                  <div className="activity-entry-heading">
+                    <strong>{activity.kind === "call" ? `Call · ${activity.outcome}` : activity.kind === "whatsapp" ? "WhatsApp conversation" : activity.kind === "status_change" ? "Lead status updated" : "Note added"}</strong>
+                    <time dateTime={activity.occurred_at}>{formatActivityTime(activity.occurred_at)}</time>
+                  </div>
+                  {activity.details ? <p>{activity.details}</p> : null}
+                </div>
+              </li>
+            ))}
+            <li>
+              <div className="activity-dot" aria-hidden="true" />
+              <div className="activity-entry">
+                <div className="activity-entry-heading"><strong>Lead added</strong><time dateTime={client.created_at}>{formatActivityTime(client.created_at)}</time></div>
+                <p>{client.lead_source ? `Source: ${client.lead_source}` : "Added to the CRM."}</p>
+              </div>
+            </li>
+          </ol>
         </section>
       </div>
     );

@@ -19,6 +19,18 @@ export type ClientRecord = {
   follow_up_date: string | null;
   notes: string | null;
   created_at: string;
+  calling_status: "Uncalled" | "Contacted" | "Did not connect";
+  last_called_at: string | null;
+};
+
+export type LeadActivity = {
+  id: number;
+  lead_id: number;
+  kind: "call" | "whatsapp" | "note" | "status_change";
+  outcome: string | null;
+  details: string | null;
+  occurred_at: string;
+  created_at: string;
 };
 
 export function getSupabase() {
