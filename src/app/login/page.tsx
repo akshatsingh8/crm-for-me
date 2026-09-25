@@ -1,5 +1,7 @@
 import { redirect } from "next/navigation";
 import { isAuthenticated } from "@/lib/auth";
+import { BrandLogo } from "../brand-logo";
+import { BrandCredit } from "../brand-credit";
 import { loginAction } from "./actions";
 
 export default async function LoginPage({
@@ -13,7 +15,7 @@ export default async function LoginPage({
   return (
     <main className="login-page">
       <section className="login-card">
-        <div className="login-brand"><div className="brand-mark">C</div><span>crm for me</span></div>
+        <div className="login-brand"><BrandLogo /><span>Udachi CRM</span></div>
         <p className="eyebrow">Welcome back</p>
         <h1>Your leads, in one place.</h1>
         <p className="muted">Sign in to manage client enquiries and follow-ups with clarity.</p>
@@ -30,6 +32,7 @@ export default async function LoginPage({
           {error ? <p className="form-error">The login ID or password is incorrect.</p> : null}
           <button className="button button-primary button-wide" type="submit">Sign in</button>
         </form>
+        <BrandCredit />
       </section>
     </main>
   );

@@ -1,6 +1,6 @@
-# crm for me
+# Udachi CRM
 
-A lightweight real-estate CRM for capturing property enquiries and keeping follow-ups organized. It is built with Next.js, TypeScript, and Supabase and is configured for Vercel deployment.
+A lightweight real-estate CRM for capturing property enquiries and keeping follow-ups organized. Powered by [Brand Spirit Labs](https://brandspiritlabs.com/). It is built with Next.js, TypeScript, and Supabase and is configured for Vercel deployment.
 
 ## Features
 

@@ -26,8 +26,12 @@ button, a, input, textarea, select { -webkit-tap-highlight-color: transparent; }
 .login-page { min-height: 100vh; display: grid; place-items: center; padding: 24px; background: linear-gradient(135deg, #f7fbff 0%, #f4f6f9 55%, #edf5fb 100%); }
 .login-card { width: min(100%, 440px); padding: 40px; background: #fff; border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 18px 45px rgba(15, 56, 88, .1); }
 .login-brand { display: flex; align-items: center; gap: 10px; margin-bottom: 36px; color: #0f172a; font-size: 15px; font-weight: 750; letter-spacing: -.02em; }
-.brand-mark { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 10px; color: white; background: var(--green); font-size: 16px; font-weight: 800; margin: 0; }
-.brand-mark-small { width: 34px; height: 34px; margin: 0; border-radius: 10px; font-size: 17px; }
+.brand-logo { display: block; flex: none; width: 38px; height: 38px; }
+.brand-logo-small { width: 34px; height: 34px; }
+.brand-credit { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+.brand-credit a { color: var(--green-dark); font-weight: 750; text-decoration: underline; text-decoration-color: transparent; text-underline-offset: 3px; }
+.brand-credit a:hover, .brand-credit a:focus-visible { text-decoration-color: currentColor; }
+.login-card > .brand-credit { margin-top: 26px; padding-top: 18px; border-top: 1px solid var(--line); text-align: center; }
 .eyebrow { margin: 0 0 8px; color: var(--green); font-size: 12px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
 h1, h2, h3, p { margin-top: 0; }
 h1 { margin-bottom: 10px; font-size: clamp(28px, 4vw, 38px); font-weight: 700; letter-spacing: -.04em; line-height: 1.12; }
@@ -60,7 +64,10 @@ input:focus, textarea:focus, select:focus { border-color: var(--green); box-shad
 .sidebar nav a:hover, .nav-button:hover { color: var(--green); background: var(--green-soft); }
 .sidebar nav a.is-active { color: var(--green); background: var(--green-soft); font-weight: 750; }
 .logout-form { margin-top: auto; }
-.content { min-width: 0; }
+.sidebar-credit { padding: 12px 12px 0; }
+.sidebar-credit .brand-credit { font-size: 11px; }
+.content { display: flex; flex-direction: column; min-width: 0; min-height: 100vh; }
+.app-footer { display: none; margin-top: auto; padding: 0 24px 24px; text-align: center; }
 .page-wrap { width: min(1280px, 100%); margin: 0 auto; padding: 42px 48px 72px; }
 .narrow-page { width: min(1000px, 100%); }
 .page-header { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 28px; }
@@ -389,7 +396,6 @@ td small { display: block; margin-top: 5px; color: var(--muted); }
 .login-page { min-height: 100svh; background: var(--paper); }
 .login-card { border-radius: 12px; box-shadow: 0 12px 36px rgba(27, 46, 39, .07); }
 .login-brand, .brand { color: var(--ink); letter-spacing: -.025em; }
-.brand-mark { background: var(--green-dark); border-radius: 8px; }
 .eyebrow, .panel-kicker { color: var(--green); font-weight: 750; letter-spacing: .09em; }
 h1 { color: #192824; font-weight: 720; }
 h2, h3 { color: var(--ink); }
@@ -448,6 +454,8 @@ tbody tr:hover { background: #f9fbf9; }
 }
 
 @media (max-width: 800px) {
+  .sidebar-credit { display: none; }
+  .app-footer { display: block; }
   .sidebar { position: sticky; top: 0; z-index: 30; width: 100%; height: auto; min-height: 66px; padding: 12px 20px; box-shadow: 0 1px 0 var(--line); }
   .sidebar nav { scrollbar-width: thin; }
   .sidebar nav a { min-height: 42px; }
@@ -464,7 +472,7 @@ tbody tr:hover { background: #f9fbf9; }
   .sidebar { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px 12px; padding: 10px 16px 0; }
   .brand { grid-column: 1; grid-row: 1; margin: 0; font-size: 15px; }
   .brand span:last-child { display: inline; }
-  .brand-mark-small { width: 31px; height: 31px; font-size: 15px; }
+  .brand-logo-small { width: 31px; height: 31px; }
   .logout-form { grid-column: 2; grid-row: 1; margin: 0; }
   .nav-button { min-height: 36px; width: auto; padding: 0 10px; font-size: 12px; }
   .sidebar nav { grid-column: 1 / -1; grid-row: 2; order: 0; width: calc(100% + 32px); margin: 0 -16px; padding: 0 12px; display: flex; flex-wrap: nowrap; gap: 2px; overflow-x: auto; overscroll-behavior-x: contain; }
