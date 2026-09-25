@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { loadAllLeads } from "@/lib/lead-data";
 import { updateClientStatusAction } from "../actions";
-import { DeleteLeadButton } from "../dashboard/delete-lead-button";
 import { LeadContactButtons } from "../lead-calling/lead-contact-buttons";
 
 export const dynamic = "force-dynamic";
@@ -40,7 +39,7 @@ export default async function ClientsPage({
   });
 
   return (
-    <div className="page-wrap">
+    <div className="page-wrap lead-directory-page">
       <header className="page-header">
         <div>
           <p className="eyebrow">Lead directory</p>
@@ -60,7 +59,7 @@ export default async function ClientsPage({
         </div>
       ) : null}
 
-      <section className="table-card">
+      <section className="table-card lead-directory">
         <div className="table-heading">
           <div><h2>All leads</h2><p>{leads.length} total records</p></div>
           <span>{clients.length} {clients.length === 1 ? "result" : "results"}</span>
@@ -84,19 +83,18 @@ export default async function ClientsPage({
             <Link className="button button-secondary" href={leads.length ? "/clients" : "/clients/new"}>{leads.length ? "Clear filters" : "Add first lead"}</Link>
           </div>
         ) : (
-          <div className="table-scroll">
-            <table>
-              <thead><tr><th>Client</th><th>Requirement</th><th>Location</th><th>Budget</th><th>Follow-up</th><th>Source</th><th>Status</th><th>Notes</th><th>Actions</th></tr></thead>
+          <div className="lead-list-wrap">
+            <table className="lead-directory-table">
+              <caption className="sr-only">Property leads and their current stage</caption>
+              <colgroup><col className="lead-col-client" /><col className="lead-col-interest" /><col className="lead-col-follow-up" /><col className="lead-col-stage" /><col className="lead-col-contact" /></colgroup>
+              <thead><tr><th>Lead</th><th>Interest</th><th>Follow-up</th><th>Stage</th><th>Contact</th></tr></thead>
               <tbody>
                 {clients.map((client) => (
                   <tr key={client.id}>
-                    <td className="client-cell"><Link className="lead-link" href={`/clients/${client.id}`}><strong>{client.name}</strong><small>{client.phone}{client.email ? ` · ${client.email}` : ""}</small><span>View profile →</span></Link></td>
-                    <td><strong>{client.requirement || "Not specified"}</strong><small>{client.property_type || "Property type pending"}{client.property_project ? ` · ${client.property_project}` : ""}</small></td>
-                    <td>{client.preferred_location || "—"}</td>
-                    <td className="budget-cell">{formatBudget(client.budget_min, client.budget_max)}</td>
-                    <td>{formatDate(client.follow_up_date)}{client.lead_temperature ? <small>{client.lead_temperature} lead</small> : null}</td>
-                    <td>{client.lead_source || "—"}</td>
-                    <td>
+                    <td className="client-cell" data-label="Lead"><Link className="lead-link" href={`/clients/${client.id}`}><strong>{client.name}</strong><small>{client.phone}</small><span>View profile →</span></Link></td>
+                    <td data-label="Interest"><div className="lead-interest"><strong>{client.requirement || "Not specified"}</strong><small>{[client.property_type, client.preferred_location].filter(Boolean).join(" · ") || "Property details pending"}</small>{client.budget_min !== null || client.budget_max !== null ? <small>{formatBudget(client.budget_min, client.budget_max)}</small> : null}</div></td>
+                    <td data-label="Follow-up"><div className="lead-follow-up">{formatDate(client.follow_up_date)}{client.lead_temperature ? <small>{client.lead_temperature} lead</small> : null}</div></td>
+                    <td data-label="Stage">
                       <form action={updateClientStatusAction} className="status-control">
                         <input type="hidden" name="id" value={client.id} />
                         <select name="status" defaultValue={client.status ?? "New"} aria-label={`Update status for ${client.name}`}>
@@ -105,14 +103,7 @@ export default async function ClientsPage({
                         <button className="text-button" type="submit">Set</button>
                       </form>
                     </td>
-                    <td className="notes-cell">{client.notes || "—"}</td>
-                    <td>
-                      <div className="row-actions">
-                        <LeadContactButtons leadId={client.id} name={client.name} phone={client.phone} currentStatus={client.status} />
-                        <Link className="text-button" href={`/clients/${client.id}?edit=1`}>Edit</Link>
-                        <DeleteLeadButton id={client.id} name={client.name} />
-                      </div>
-                    </td>
+                    <td data-label="Contact"><LeadContactButtons leadId={client.id} name={client.name} phone={client.phone} currentStatus={client.status} /></td>
                   </tr>
                 ))}
               </tbody>
