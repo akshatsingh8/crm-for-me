@@ -11,6 +11,7 @@ A lightweight real-estate CRM for capturing property enquiries and keeping follo
 - Lead source, temperature, status, and follow-up date
 - Optional fields throughout the form; only name and phone are required
 - Responsive dashboard for desktop and mobile
+- Excel (.xlsx), CSV, and TSV lead imports with column mapping, validation, preview, and explicit confirmation
 - Supabase Row Level Security with server-only database access
 
 ## Tech stack
@@ -32,7 +33,7 @@ A lightweight real-estate CRM for capturing property enquiries and keeping follo
 
 3. Apply the SQL files in [`supabase/migrations`](supabase/migrations) to your Supabase project in filename order.
 
-   The migrations preserve existing records, reconcile tables left by earlier SQL Editor runs, and make every lead-detail field optional. If the CRM was set up before optional fields were introduced, also run [`20260914060211_make_client_details_optional.sql`](supabase/migrations/20260914060211_make_client_details_optional.sql) in the Supabase SQL Editor.
+   The migrations preserve existing records, reconcile tables left by earlier SQL Editor runs, and make every lead-detail field optional. Apply [`20260925173331_grant_crm_lead_updates.sql`](supabase/migrations/20260925173331_grant_crm_lead_updates.sql) to existing projects to repair `permission denied for table real_estate_clients` when editing a lead.
 
 4. Start the development server:
 
@@ -74,6 +75,6 @@ npm run build
 
 ## Security model
 
-The browser never receives `CRM_DB_ACCESS_TOKEN`. Reads and inserts happen in server-rendered code or Server Actions, while Supabase RLS accepts requests only when the private request header matches the SHA-256 hash stored in the database policy. Login sessions use an HTTP-only, HMAC-signed cookie.
+The browser never receives `CRM_DB_ACCESS_TOKEN`. Lead reads and writes run on the server, while Supabase RLS accepts requests only when the private request header matches the SHA-256 hash stored in the database policy. Login sessions use an HTTP-only, HMAC-signed cookie.
 
 This fixed-login model is intended for a small private CRM. For a multi-user product, replace it with Supabase Auth and user-owned RLS policies.

@@ -43,7 +43,7 @@ export default async function DashboardPage({
           <h1>Property leads</h1>
           <p className="muted">Track every buyer, seller, property requirement, and follow-up.</p>
         </div>
-        <Link className="button button-primary" href="/clients/new">+ Add client</Link>
+        <div className="header-actions"><Link className="button button-secondary" href="/clients/import">Import leads</Link><Link className="button button-primary" href="/clients/new">+ Add client</Link></div>
       </header>
 
       {created ? <div className="notice success">Real estate lead added successfully.</div> : null}
