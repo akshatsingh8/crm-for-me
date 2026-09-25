@@ -1,13 +1,13 @@
 import Link from "next/link";
-import { getSupabase, type ClientRecord } from "@/lib/supabase";
+import { getSupabase, type ClientRecord, type LeadActivity } from "@/lib/supabase";
 import { LeadContactButtons } from "./lead-contact-buttons";
 
 export const dynamic = "force-dynamic";
 
 type CallingLead = Pick<ClientRecord,
   "id" | "name" | "phone" | "status" | "requirement" | "property_type" |
-  "preferred_location" | "created_at" | "calling_status" | "last_called_at"
->;
+  "preferred_location" | "notes" | "created_at" | "calling_status" | "last_called_at"
+> & { lead_activities: Pick<LeadActivity, "id" | "kind" | "outcome" | "details" | "occurred_at">[] };
 
 const views = [
   { value: "uncalled", label: "Uncalled", status: "Uncalled" },
@@ -23,6 +23,13 @@ function formatCallTime(value: string | null) {
   }).format(new Date(value));
 }
 
+function activityTitle(activity: CallingLead["lead_activities"][number]) {
+  if (activity.kind === "call") return `Call · ${activity.outcome ?? "Logged"}`;
+  if (activity.kind === "whatsapp") return "WhatsApp conversation";
+  if (activity.kind === "status_change") return "Lead status updated";
+  return "Note added";
+}
+
 export default async function LeadCallingPage({ searchParams }: {
   searchParams: Promise<{ view?: string }>;
 }) {
@@ -30,7 +37,10 @@ export default async function LeadCallingPage({ searchParams }: {
   const active = views.find((item) => item.value === view) ?? views[0];
   const { data, error } = await getSupabase()
     .from("real_estate_clients")
-    .select("id,name,phone,status,requirement,property_type,preferred_location,created_at,calling_status,last_called_at")
+    .select("id,name,phone,status,requirement,property_type,preferred_location,notes,created_at,calling_status,last_called_at,lead_activities(id,kind,outcome,details,occurred_at)")
+    .order("occurred_at", { referencedTable: "lead_activities", ascending: false })
+    .order("id", { referencedTable: "lead_activities", ascending: false })
+    .limit(1, { referencedTable: "lead_activities" })
     .order("created_at", { ascending: false });
   const leads = (data ?? []) as CallingLead[];
   const filtered = leads.filter((lead) => (lead.calling_status ?? "Uncalled") === active.status);
@@ -71,26 +81,43 @@ export default async function LeadCallingPage({ searchParams }: {
             <p>{active.value === "uncalled" ? "New leads appear here until you log their first call." : "Leads with this call result will appear here."}</p>
           </div>
         ) : null}
-        {filtered.map((lead) => (
-          <article className="calling-card" key={lead.id}>
-            <div className="calling-card-main">
-              <div className="calling-card-title">
-                <Link href={`/clients/${lead.id}`}><h3>{lead.name}</h3></Link>
-                <span className="status">{lead.status ?? "New"}</span>
+        {filtered.map((lead) => {
+          const latestActivity = lead.lead_activities[0];
+          return (
+            <article className="calling-card" key={lead.id}>
+              <div className="calling-card-main">
+                <div className="calling-card-title">
+                  <Link href={`/clients/${lead.id}`}><h3>{lead.name}</h3></Link>
+                  <span className="status">{lead.status ?? "New"}</span>
+                </div>
+                <p className="calling-phone">{lead.phone}</p>
+                <div className="calling-meta">
+                  <span>{lead.requirement ?? "Requirement pending"}{lead.property_type ? ` · ${lead.property_type}` : ""}</span>
+                  {lead.preferred_location ? <span>{lead.preferred_location}</span> : null}
+                  <span>{formatCallTime(lead.last_called_at)}</span>
+                </div>
               </div>
-              <p className="calling-phone">{lead.phone}</p>
-              <div className="calling-meta">
-                <span>{lead.requirement ?? "Requirement pending"}{lead.property_type ? ` · ${lead.property_type}` : ""}</span>
-                {lead.preferred_location ? <span>{lead.preferred_location}</span> : null}
-                <span>{formatCallTime(lead.last_called_at)}</span>
+              <div className="calling-context">
+                <div className="calling-detail">
+                  <span className="calling-detail-label">Latest activity</span>
+                  <div className="calling-detail-heading">
+                    <strong>{latestActivity ? activityTitle(latestActivity) : "Lead added"}</strong>
+                    <time dateTime={latestActivity?.occurred_at ?? lead.created_at}>{formatCallTime(latestActivity?.occurred_at ?? lead.created_at)}</time>
+                  </div>
+                  <p>{latestActivity?.details || (latestActivity ? "No details recorded." : "Added to the CRM.")}</p>
+                </div>
+                <div className="calling-detail">
+                  <span className="calling-detail-label">Lead note</span>
+                  <p>{lead.notes?.trim() || "No note added yet."}</p>
+                </div>
               </div>
-            </div>
-            <div className="calling-card-actions">
-              <LeadContactButtons leadId={lead.id} name={lead.name} phone={lead.phone} currentStatus={lead.status} />
-              <Link className="calling-profile-link" href={`/clients/${lead.id}`}>View timeline →</Link>
-            </div>
-          </article>
-        ))}
+              <div className="calling-card-actions">
+                <LeadContactButtons leadId={lead.id} name={lead.name} phone={lead.phone} currentStatus={lead.status} />
+                <Link className="calling-profile-link" href={`/clients/${lead.id}`}>View timeline →</Link>
+              </div>
+            </article>
+          );
+        })}
       </section>
     </div>
   );
