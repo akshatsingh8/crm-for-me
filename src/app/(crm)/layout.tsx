@@ -13,7 +13,7 @@ export default async function CrmLayout({ children }: { children: React.ReactNod
       <aside className="sidebar">
         <Link className="brand" href="/dashboard">
           <BrandLogo small />
-          <span>Udachi CRM</span>
+          <span className="brand-copy"><span>Udachi CRM</span><BrandCredit /></span>
         </Link>
         <nav aria-label="Workspace navigation">
           <p className="nav-label">Workspace</p>
@@ -22,12 +22,8 @@ export default async function CrmLayout({ children }: { children: React.ReactNod
         <form action={logoutAction} className="logout-form">
           <button className="nav-button" type="submit">Log out</button>
         </form>
-        <div className="sidebar-credit"><BrandCredit /></div>
       </aside>
-      <main className="content">
-        {children}
-        <footer className="app-footer"><BrandCredit /></footer>
-      </main>
+      <main className="content">{children}</main>
     </div>
   );
 }
