@@ -5,7 +5,8 @@ A lightweight real-estate CRM for capturing property enquiries and keeping follo
 ## Features
 
 - Fixed, server-validated CRM login
-- Real-estate lead directory and pipeline totals
+- Dashboard overview with lead growth, pipeline stages, sources, follow-ups, and a requirement/property matrix
+- Dedicated lead directory with search and status filters
 - Buyer, renter, and seller requirements
 - Property type, project, location, and budget tracking
 - Lead source, temperature, status, and follow-up date

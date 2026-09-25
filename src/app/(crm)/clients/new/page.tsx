@@ -10,7 +10,7 @@ export default async function NewClientPage({
 
   return (
     <div className="page-wrap form-page">
-      <Link className="back-link" href="/dashboard">← Back to clients</Link>
+      <Link className="back-link" href="/clients">← Back to leads</Link>
 
       <form action={createClientAction} className="client-form">
         {error ? <div className="notice error"><strong>Could not add client.</strong> {error}</div> : null}
@@ -37,7 +37,7 @@ export default async function NewClientPage({
           <label className="field-full">Notes <textarea name="notes" rows={4} placeholder="Property preferences, site visit details, objections, or next steps…" /></label>
         </div>
         <div className="form-actions">
-          <Link className="button button-ghost" href="/dashboard">Cancel</Link>
+          <Link className="button button-ghost" href="/clients">Cancel</Link>
           <button className="button button-primary" type="submit">Save lead</button>
         </div>
       </form>

@@ -40,7 +40,7 @@ export default async function EditClientPage({
 
     return (
       <div className="page-wrap form-page">
-        <Link className="back-link" href="/dashboard">← Back to clients</Link>
+        <Link className="back-link" href="/clients">← Back to leads</Link>
         <section className="client-profile">
           <header className="profile-header">
             <div>
@@ -96,7 +96,7 @@ export default async function EditClientPage({
         </div>
         <div className="form-actions">
           <DeleteLeadFormAction name={client.name} />
-          <Link className="button button-ghost" href="/dashboard">Cancel</Link>
+          <Link className="button button-ghost" href="/clients">Cancel</Link>
           <button className="button button-primary" type="submit">Save changes</button>
         </div>
       </form>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { requireAuth } from "@/lib/auth";
 import { logoutAction } from "./actions";
+import { CrmNavLinks } from "./nav-links";
 
 export default async function CrmLayout({ children }: { children: React.ReactNode }) {
   await requireAuth();
@@ -12,11 +13,9 @@ export default async function CrmLayout({ children }: { children: React.ReactNod
           <span className="brand-mark brand-mark-small">C</span>
           <span>crm for me</span>
         </Link>
-        <nav>
+        <nav aria-label="Workspace navigation">
           <p className="nav-label">Workspace</p>
-          <Link href="/dashboard"><span className="nav-icon">◉</span>Clients</Link>
-          <Link href="/clients/new"><span className="nav-icon">＋</span>Add client</Link>
-          <Link href="/clients/import"><span className="nav-icon">⇧</span>Import leads</Link>
+          <CrmNavLinks />
         </nav>
         <form action={logoutAction} className="logout-form">
           <button className="nav-button" type="submit">Log out</button>

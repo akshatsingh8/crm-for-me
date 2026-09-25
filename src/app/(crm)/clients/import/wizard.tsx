@@ -89,7 +89,7 @@ export function ImportWizard() {
   return (
     <div className="import-stack">
       {imported !== null ? (
-        <div className="notice success"><strong>{imported} {imported === 1 ? "lead" : "leads"} imported.</strong> <Link href="/dashboard">View lead directory →</Link></div>
+        <div className="notice success"><strong>{imported} {imported === 1 ? "lead" : "leads"} imported.</strong> <Link href="/clients">View lead directory →</Link></div>
       ) : null}
       {error ? <div className="notice error" role="alert">{error}</div> : null}
       {serverErrors.length > 0 ? <div className="notice error"><ul>{serverErrors.slice(0, 8).map((message, index) => <li key={index}>{message}</li>)}</ul></div> : null}

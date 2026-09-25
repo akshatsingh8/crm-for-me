@@ -1,0 +1,18 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+export function CrmNavLinks() {
+  const pathname = usePathname();
+  const dashboardActive = pathname === "/dashboard";
+  const clientsActive = pathname === "/clients" || (pathname.startsWith("/clients/") && pathname !== "/clients/new" && pathname !== "/clients/import");
+  return (
+    <>
+      <Link className={dashboardActive ? "is-active" : ""} aria-current={dashboardActive ? "page" : undefined} href="/dashboard"><span className="nav-icon">▦</span>Dashboard</Link>
+      <Link className={clientsActive ? "is-active" : ""} aria-current={clientsActive ? "page" : undefined} href="/clients"><span className="nav-icon">◉</span>Leads</Link>
+      <Link className={pathname === "/clients/new" ? "is-active" : ""} aria-current={pathname === "/clients/new" ? "page" : undefined} href="/clients/new"><span className="nav-icon">＋</span>Add client</Link>
+      <Link className={pathname === "/clients/import" ? "is-active" : ""} aria-current={pathname === "/clients/import" ? "page" : undefined} href="/clients/import"><span className="nav-icon">⇧</span>Import leads</Link>
+    </>
+  );
+}

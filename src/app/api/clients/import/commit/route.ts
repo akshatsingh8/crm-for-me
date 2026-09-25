@@ -21,5 +21,6 @@ export async function POST(request: Request) {
   const { error } = await getSupabase().from("real_estate_clients").insert(records);
   if (error) return Response.json({ error: error.message }, { status: 500 });
   revalidatePath("/dashboard");
+  revalidatePath("/clients");
   return Response.json({ imported: records.length });
 }

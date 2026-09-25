@@ -4,7 +4,7 @@ import { ImportWizard } from "./wizard";
 export default function ImportClientsPage() {
   return (
     <div className="page-wrap narrow-page">
-      <Link className="back-link" href="/dashboard">← Back to clients</Link>
+      <Link className="back-link" href="/clients">← Back to leads</Link>
       <header className="page-header">
         <div>
           <p className="eyebrow">Bulk add leads</p>

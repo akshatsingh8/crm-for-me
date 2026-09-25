@@ -42,7 +42,8 @@ export async function createClientAction(formData: FormData) {
   if (error) redirect(`/clients/new?error=${encodeURIComponent(error.message)}`);
 
   revalidatePath("/dashboard");
-  redirect("/dashboard?created=1");
+  revalidatePath("/clients");
+  redirect("/clients?created=1");
 }
 
 function getClientValues(formData: FormData) {
@@ -72,7 +73,7 @@ function getClientId(formData: FormData) {
 export async function updateClientAction(formData: FormData) {
   await requireAuth();
   const id = getClientId(formData);
-  if (!id) redirect("/dashboard?error=Invalid%20lead.");
+  if (!id) redirect("/clients?error=Invalid%20lead.");
 
   const values = getClientValues(formData);
   if (!values.name || !values.phone) {
@@ -86,7 +87,8 @@ export async function updateClientAction(formData: FormData) {
   if (error) redirect(`/clients/${id}?error=${encodeURIComponent(error.message)}`);
 
   revalidatePath("/dashboard");
-  redirect("/dashboard?updated=1");
+  revalidatePath("/clients");
+  redirect("/clients?updated=1");
 }
 
 export async function updateClientStatusAction(formData: FormData) {
@@ -94,23 +96,25 @@ export async function updateClientStatusAction(formData: FormData) {
   const id = getClientId(formData);
   const status = String(formData.get("status") ?? "");
   const allowedStatuses = ["New", "Contacted", "Site visit", "Negotiation", "Closed won", "Closed lost"];
-  if (!id || !allowedStatuses.includes(status)) redirect("/dashboard?error=Invalid%20status%20update.");
+  if (!id || !allowedStatuses.includes(status)) redirect("/clients?error=Invalid%20status%20update.");
 
   const { error } = await getSupabase().from("real_estate_clients").update({ status }).eq("id", id);
-  if (error) redirect(`/dashboard?error=${encodeURIComponent(error.message)}`);
+  if (error) redirect(`/clients?error=${encodeURIComponent(error.message)}`);
 
   revalidatePath("/dashboard");
-  redirect("/dashboard?updated=1");
+  revalidatePath("/clients");
+  redirect("/clients?updated=1");
 }
 
 export async function deleteClientAction(formData: FormData) {
   await requireAuth();
   const id = getClientId(formData);
-  if (!id) redirect("/dashboard?error=Invalid%20lead.");
+  if (!id) redirect("/clients?error=Invalid%20lead.");
 
   const { error } = await getSupabase().from("real_estate_clients").delete().eq("id", id);
-  if (error) redirect(`/dashboard?error=${encodeURIComponent(error.message)}`);
+  if (error) redirect(`/clients?error=${encodeURIComponent(error.message)}`);
 
   revalidatePath("/dashboard");
-  redirect("/dashboard?deleted=1");
+  revalidatePath("/clients");
+  redirect("/clients?deleted=1");
 }
