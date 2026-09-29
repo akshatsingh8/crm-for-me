@@ -39,6 +39,7 @@ export default async function ClientsPage({
   const temperatures = ["Hot", "Warm", "Cold"];
   const sourceFilter = sources.includes(source ?? "") ? source : "";
   const temperatureFilter = temperatures.includes(temperature ?? "") ? temperature : "";
+  const activeFilterCount = [search, statusFilter, timelineSearch, activityFilter, sourceFilter, temperatureFilter].filter(Boolean).length;
   const timelineMatches = timelineSearch || activityFilter ? await loadTimelineLeadIds(timelineSearch, activityFilter) : null;
   const clients = leads.filter((lead) => {
     if (statusFilter && (lead.status ?? "New") !== statusFilter) return false;
@@ -75,6 +76,11 @@ export default async function ClientsPage({
           <div><h2>All leads</h2><p>{leads.length} total records</p></div>
           <span>{clients.length} {clients.length === 1 ? "result" : "results"}</span>
         </div>
+        <details className="lead-filter-disclosure" open={activeFilterCount > 0}>
+          <summary className="lead-filter-toggle">
+            <span className="lead-filter-toggle-label"><span aria-hidden="true">☷</span> Filters{activeFilterCount ? <span className="lead-filter-count">{activeFilterCount} active</span> : null}</span>
+            <span className="lead-filter-chevron" aria-hidden="true">⌄</span>
+          </summary>
         <form className="lead-filter-bar" action="/clients">
           <label className="sr-only" htmlFor="lead-search">Search leads</label>
           <input id="lead-search" name="q" type="search" placeholder="Search name, phone, or email" defaultValue={q ?? ""} />
@@ -103,6 +109,7 @@ export default async function ClientsPage({
           <button className="button button-secondary" type="submit">Filter</button>
           {search || statusFilter || timelineSearch || activityFilter || sourceFilter || temperatureFilter ? <Link className="text-button" href="/clients">Clear</Link> : null}
         </form>
+        </details>
         {clients.length === 0 && !error ? (
           <div className="empty-state">
             <div className="empty-icon">◎</div>

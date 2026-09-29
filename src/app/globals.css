@@ -237,7 +237,17 @@ td small { display: block; margin-top: 5px; color: var(--muted); }
 .activity-entry p { margin: 7px 0 0; color: #475569; font-size: 13px; line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; }
 
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-.lead-filter-bar { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; padding: 16px 20px; border-bottom: 1px solid var(--line); background: #fbfcfe; }
+.lead-filter-disclosure { border-bottom: 1px solid var(--line); }
+.lead-filter-toggle { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 56px; padding: 12px 20px; color: var(--ink); background: #fff; cursor: pointer; font-size: 13px; font-weight: 750; list-style: none; transition: background .2s ease, color .2s ease; }
+.lead-filter-toggle::-webkit-details-marker { display: none; }
+.lead-filter-toggle:hover, .lead-filter-toggle:focus-visible { color: var(--green); background: var(--surface-muted); }
+.lead-filter-toggle:focus-visible { outline: 2px solid var(--green); outline-offset: -3px; }
+.lead-filter-toggle-label { display: inline-flex; align-items: center; gap: 9px; }
+.lead-filter-toggle-label > span:first-child { font-size: 17px; line-height: 1; }
+.lead-filter-count { padding: 4px 8px; border-radius: 999px; color: var(--green-dark); background: var(--green-soft); font-size: 11px; font-weight: 750; }
+.lead-filter-chevron { font-size: 22px; line-height: 1; transition: transform .2s ease; }
+.lead-filter-disclosure[open] .lead-filter-chevron { transform: rotate(180deg); }
+.lead-filter-bar { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; padding: 16px 20px; border-top: 1px solid var(--line); background: #fbfcfe; }
 .lead-filter-bar input { width: min(100%, 330px); }
 .lead-filter-bar select { width: 180px; }
 .table-heading p { margin: 4px 0 0; color: var(--muted); font-size: 12px; }
@@ -626,6 +636,7 @@ a.dashboard-kpi:hover::after, a.dashboard-kpi:focus-visible::after { transform: 
   .table-heading, .calling-list-heading, .activity-heading { padding: 16px; }
   .table-heading { align-items: flex-start; gap: 10px; }
   .lead-filter-bar { padding: 14px; }
+  .lead-filter-toggle { min-height: 52px; padding: 12px 14px; }
   .lead-directory-table tbody { background: var(--paper); }
   .lead-directory-table .client-cell { background: #fafcfb; }
   .lead-directory-table .status-control select { min-height: 42px; }
