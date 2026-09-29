@@ -5,6 +5,7 @@ import { DeleteLeadFormAction } from "../../dashboard/delete-lead-button";
 import { getSupabase, type ClientRecord, type LeadActivity } from "@/lib/supabase";
 import { LeadContactButtons } from "../../lead-calling/lead-contact-buttons";
 import { ActivityNoteForm } from "../../lead-calling/activity-note-form";
+import { LEAD_STATUSES } from "@/lib/lead-status";
 
 function formatActivityTime(value: string) {
   return new Intl.DateTimeFormat("en-IN", {
@@ -134,7 +135,7 @@ export default async function EditClientPage({
           <label>Maximum budget (₹) <input name="budget_max" type="number" min="0" step="1000" inputMode="numeric" defaultValue={client.budget_max ?? ""} /></label>
           <label>Lead source <select name="lead_source" defaultValue={client.lead_source ?? ""}><option value="">Not specified</option><option>Referral</option><option>Website</option><option>Portal</option><option>Social media</option><option>Walk-in</option><option>Other</option></select></label>
           <label>Lead temperature <select name="lead_temperature" defaultValue={client.lead_temperature ?? ""}><option value="">Not specified</option><option>Hot</option><option>Warm</option><option>Cold</option></select></label>
-          <label>Status <select name="status" defaultValue={client.status ?? ""}><option value="">Not specified</option><option>New</option><option>Contacted</option><option>Site visit</option><option>Negotiation</option><option>Closed won</option><option>Closed lost</option></select></label>
+          <label>Status <select name="status" defaultValue={client.status ?? ""}><option value="">Not specified</option>{LEAD_STATUSES.map((status) => <option key={status}>{status}</option>)}</select></label>
           <label>Next follow-up <input name="follow_up_date" type="date" defaultValue={client.follow_up_date ?? ""} /></label>
           <label className="field-full">Notes <textarea name="notes" rows={4} defaultValue={client.notes ?? ""} /></label>
         </div>

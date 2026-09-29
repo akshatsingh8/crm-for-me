@@ -7,7 +7,7 @@ import type { buildDashboardMetrics } from "@/lib/dashboard-metrics";
 type Metrics = ReturnType<typeof buildDashboardMetrics>;
 
 const sourceColors = ["#176b57", "#52a48b", "#9acbb5", "#b78a45", "#597a8e", "#95a796", "#ccd9d1"];
-const stageColors = ["#176b57", "#41947b", "#84baa2", "#b78a45", "#597a8e", "#b5c8bc"];
+const stageColors = ["#176b57", "#41947b", "#26836d", "#75a58d", "#a1ad70", "#5c9baf", "#b78a45", "#39745d", "#9a8d86", "#b5c8bc"];
 
 function TrendChart({ months }: { months: Metrics["months"] }) {
   const [period, setPeriod] = useState<6 | 12>(6);

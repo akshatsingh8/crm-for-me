@@ -1,6 +1,7 @@
 import "server-only";
 
 import { createClient } from "@supabase/supabase-js";
+import type { LeadStatus } from "@/lib/lead-status";
 
 export type ClientRecord = {
   id: number;
@@ -15,7 +16,7 @@ export type ClientRecord = {
   budget_max: number | null;
   lead_source: "Referral" | "Website" | "Portal" | "Social media" | "Walk-in" | "Other" | null;
   lead_temperature: "Hot" | "Warm" | "Cold" | null;
-  status: "New" | "Contacted" | "Site visit" | "Negotiation" | "Closed won" | "Closed lost" | null;
+  status: LeadStatus | null;
   follow_up_date: string | null;
   notes: string | null;
   created_at: string;

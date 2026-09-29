@@ -2,6 +2,7 @@
 
 import { destroySession, requireAuth } from "@/lib/auth";
 import { getSupabase } from "@/lib/supabase";
+import { isLeadStatus } from "@/lib/lead-status";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -98,8 +99,7 @@ export async function updateClientStatusAction(formData: FormData) {
   await requireAuth();
   const id = getClientId(formData);
   const status = String(formData.get("status") ?? "");
-  const allowedStatuses = ["New", "Contacted", "Site visit", "Negotiation", "Closed won", "Closed lost"];
-  if (!id || !allowedStatuses.includes(status)) redirect("/clients?error=Invalid%20status%20update.");
+  if (!id || !isLeadStatus(status)) redirect("/clients?error=Invalid%20status%20update.");
 
   const { error } = await getSupabase().from("real_estate_clients").update({ status }).eq("id", id);
   if (error) redirect(`/clients?error=${encodeURIComponent(error.message)}`);

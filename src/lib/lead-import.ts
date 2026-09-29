@@ -1,3 +1,5 @@
+import { LEAD_STATUSES } from "@/lib/lead-status";
+
 export const IMPORT_FIELDS = [
   { key: "name", label: "Full name", required: true, aliases: ["client name", "customer name", "lead name", "full name"] },
   { key: "phone", label: "Phone number", required: true, aliases: ["mobile", "mobile number", "contact number", "telephone", "phone no"] },
@@ -24,7 +26,7 @@ const choices: Partial<Record<ImportField, readonly string[]>> = {
   property_type: ["Apartment", "Villa", "Plot", "Commercial", "Office", "Other"],
   lead_source: ["Referral", "Website", "Portal", "Social media", "Walk-in", "Other"],
   lead_temperature: ["Hot", "Warm", "Cold"],
-  status: ["New", "Contacted", "Site visit", "Negotiation", "Closed won", "Closed lost"],
+  status: LEAD_STATUSES,
 };
 
 export function normalizeHeading(value: string) {

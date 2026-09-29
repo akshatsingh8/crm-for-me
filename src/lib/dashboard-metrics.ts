@@ -1,6 +1,7 @@
 import type { ClientRecord } from "@/lib/supabase";
+import { CLOSED_LEAD_STATUSES, LEAD_STATUSES } from "@/lib/lead-status";
 
-export const PIPELINE_STAGES = ["New", "Contacted", "Site visit", "Negotiation", "Closed won", "Closed lost"] as const;
+export const PIPELINE_STAGES = LEAD_STATUSES;
 
 type DashboardLead = Pick<ClientRecord,
   "created_at" | "status" | "lead_source" | "follow_up_date"
@@ -44,8 +45,9 @@ export function buildDashboardMetrics(leads: DashboardLead[], now = new Date()) 
     }
 
     const status = lead.status ?? "New";
-    pipeline.find((stage) => stage.label === status)!.count++;
-    const isOpen = status !== "Closed won" && status !== "Closed lost";
+    const stage = pipeline.find((item) => item.label === status);
+    if (stage) stage.count++;
+    const isOpen = !CLOSED_LEAD_STATUSES.includes(status);
     if (isOpen) {
       open++;
       if (!lead.follow_up_date) missingFollowUp++;
@@ -69,7 +71,7 @@ export function buildDashboardMetrics(leads: DashboardLead[], now = new Date()) 
     missingFollowUp,
     newThisMonth: months[11].count,
     previousMonth: months[10].count,
-    won: pipeline[4].count,
+    won: pipeline.find((stage) => stage.label === "Closed won")?.count ?? 0,
     months,
     pipeline,
     sources: Array.from(sources, ([label, count]) => ({ label, count })).sort((a, b) => b.count - a.count),

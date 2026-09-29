@@ -4,6 +4,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { recordLeadActivityAction, recordLeadCallAction } from "./actions";
+import { LEAD_STATUSES } from "@/lib/lead-status";
 
 type Props = {
   leadId: number;
@@ -112,7 +113,7 @@ export function LeadContactButtons({ leadId, name, phone, currentStatus }: Props
                   <label>Lead status
                     <select value={leadStatus} onChange={(event) => setLeadStatus(event.target.value)}>
                       <option value="">Keep current status{currentStatus ? ` (${currentStatus})` : ""}</option>
-                      <option>New</option><option>Contacted</option><option>Site visit</option><option>Negotiation</option><option>Closed won</option><option>Closed lost</option>
+                      {LEAD_STATUSES.map((status) => <option key={status}>{status}</option>)}
                     </select>
                   </label>
                 </>

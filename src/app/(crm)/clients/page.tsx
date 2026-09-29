@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { loadAllLeads } from "@/lib/lead-data";
+import { loadAllLeads, loadTimelineLeadIds, TIMELINE_TYPES } from "@/lib/lead-data";
+import { LEAD_STATUSES, isLeadStatus } from "@/lib/lead-status";
 import { updateClientStatusAction } from "../actions";
 import { LeadContactButtons } from "../lead-calling/lead-contact-buttons";
 
@@ -26,15 +27,24 @@ function formatBudget(min: number | null, max: number | null) {
 export default async function ClientsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ created?: string; updated?: string; deleted?: string; error?: string; q?: string; status?: string }>;
+  searchParams: Promise<{ created?: string; updated?: string; deleted?: string; error?: string; q?: string; status?: string; timeline?: string; activity?: string; source?: string; temperature?: string }>;
 }) {
-  const { created, updated, deleted, error: actionError, q, status } = await searchParams;
+  const { created, updated, deleted, error: actionError, q, status, timeline, activity, source, temperature } = await searchParams;
   const { leads, error } = await loadAllLeads();
   const search = (q ?? "").trim().toLowerCase().slice(0, 120);
-  const allowedStatuses = ["New", "Contacted", "Site visit", "Negotiation", "Closed won", "Closed lost"];
-  const statusFilter = allowedStatuses.includes(status ?? "") ? status : "";
+  const statusFilter = isLeadStatus(status ?? "") ? status : "";
+  const timelineSearch = (timeline ?? "").trim().toLowerCase().slice(0, 120);
+  const activityFilter = TIMELINE_TYPES.some((item) => item.value === activity) ? activity! : "";
+  const sources = ["Referral", "Website", "Portal", "Social media", "Walk-in", "Other"];
+  const temperatures = ["Hot", "Warm", "Cold"];
+  const sourceFilter = sources.includes(source ?? "") ? source : "";
+  const temperatureFilter = temperatures.includes(temperature ?? "") ? temperature : "";
+  const timelineMatches = timelineSearch || activityFilter ? await loadTimelineLeadIds(timelineSearch, activityFilter) : null;
   const clients = leads.filter((lead) => {
     if (statusFilter && (lead.status ?? "New") !== statusFilter) return false;
+    if (sourceFilter && lead.lead_source !== sourceFilter) return false;
+    if (temperatureFilter && lead.lead_temperature !== temperatureFilter) return false;
+    if (timelineMatches && !timelineMatches.error && !timelineMatches.ids.has(lead.id)) return false;
     return !search || [lead.name, lead.phone, lead.email ?? ""].some((value) => value.toLowerCase().includes(search));
   });
 
@@ -58,6 +68,7 @@ export default async function ClientsPage({
           <strong>Could not load leads.</strong> {error}
         </div>
       ) : null}
+      {timelineMatches?.error ? <div className="notice error"><strong>Could not search timeline.</strong> {timelineMatches.error}</div> : null}
 
       <section className="table-card lead-directory">
         <div className="table-heading">
@@ -70,16 +81,33 @@ export default async function ClientsPage({
           <label className="sr-only" htmlFor="lead-status">Filter by status</label>
           <select id="lead-status" name="status" defaultValue={statusFilter}>
             <option value="">All statuses</option>
-            {allowedStatuses.map((value) => <option key={value}>{value}</option>)}
+            {LEAD_STATUSES.map((value) => <option key={value}>{value}</option>)}
+          </select>
+          <label className="sr-only" htmlFor="lead-source">Filter by source</label>
+          <select id="lead-source" name="source" defaultValue={sourceFilter}>
+            <option value="">All sources</option>
+            {sources.map((value) => <option key={value}>{value}</option>)}
+          </select>
+          <label className="sr-only" htmlFor="lead-temperature">Filter by priority</label>
+          <select id="lead-temperature" name="temperature" defaultValue={temperatureFilter}>
+            <option value="">All priorities</option>
+            {temperatures.map((value) => <option key={value}>{value}</option>)}
+          </select>
+          <label className="sr-only" htmlFor="lead-timeline">Search timeline details</label>
+          <input id="lead-timeline" name="timeline" type="search" placeholder="Search timeline text" defaultValue={timeline ?? ""} maxLength={120} />
+          <label className="sr-only" htmlFor="lead-activity">Filter timeline activity</label>
+          <select id="lead-activity" name="activity" defaultValue={activityFilter}>
+            <option value="">All timeline activity</option>
+            {TIMELINE_TYPES.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
           </select>
           <button className="button button-secondary" type="submit">Filter</button>
-          {search || statusFilter ? <Link className="text-button" href="/clients">Clear</Link> : null}
+          {search || statusFilter || timelineSearch || activityFilter || sourceFilter || temperatureFilter ? <Link className="text-button" href="/clients">Clear</Link> : null}
         </form>
         {clients.length === 0 && !error ? (
           <div className="empty-state">
             <div className="empty-icon">◎</div>
             <h3>{leads.length ? "No matching leads" : "No property leads yet"}</h3>
-            <p>{leads.length ? "Try a different search or status." : "Add your first lead to start building your pipeline."}</p>
+            <p>{leads.length ? "Try adjusting your lead or timeline filters." : "Add your first lead to start building your pipeline."}</p>
             <Link className="button button-secondary" href={leads.length ? "/clients" : "/clients/new"}>{leads.length ? "Clear filters" : "Add first lead"}</Link>
           </div>
         ) : (
@@ -98,7 +126,7 @@ export default async function ClientsPage({
                       <form action={updateClientStatusAction} className="status-control">
                         <input type="hidden" name="id" value={client.id} />
                         <select name="status" defaultValue={client.status ?? "New"} aria-label={`Update status for ${client.name}`}>
-                          <option>New</option><option>Contacted</option><option>Site visit</option><option>Negotiation</option><option>Closed won</option><option>Closed lost</option>
+                          {LEAD_STATUSES.map((status) => <option key={status}>{status}</option>)}
                         </select>
                         <button className="text-button" type="submit">Set</button>
                       </form>

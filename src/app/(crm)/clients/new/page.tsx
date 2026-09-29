@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LEAD_STATUSES } from "@/lib/lead-status";
 import { createClientAction } from "../../actions";
 
 export default async function NewClientPage({
@@ -32,7 +33,7 @@ export default async function NewClientPage({
           <label>Maximum budget (₹) <input name="budget_max" type="number" min="0" step="1000" inputMode="numeric" placeholder="e.g. 1,50,00,000" /></label>
           <label>Lead source <select name="lead_source" defaultValue=""><option value="">Not specified</option><option>Referral</option><option>Website</option><option>Portal</option><option>Social media</option><option>Walk-in</option><option>Other</option></select></label>
           <label>Lead temperature <select name="lead_temperature" defaultValue=""><option value="">Not specified</option><option>Hot</option><option>Warm</option><option>Cold</option></select></label>
-          <label>Status <select name="status" defaultValue=""><option value="">Not specified</option><option>New</option><option>Contacted</option><option>Site visit</option><option>Negotiation</option><option>Closed won</option><option>Closed lost</option></select></label>
+          <label>Status <select name="status" defaultValue=""><option value="">Not specified</option>{LEAD_STATUSES.map((status) => <option key={status}>{status}</option>)}</select></label>
           <label>Next follow-up <input name="follow_up_date" type="date" /></label>
           <label className="field-full">Notes <textarea name="notes" rows={4} placeholder="Property preferences, site visit details, objections, or next steps…" /></label>
         </div>

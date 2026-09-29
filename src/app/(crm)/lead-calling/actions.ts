@@ -2,6 +2,7 @@
 
 import { requireAuth } from "@/lib/auth";
 import { getSupabase } from "@/lib/supabase";
+import { isLeadStatus } from "@/lib/lead-status";
 import { revalidatePath } from "next/cache";
 
 type Result = { error?: string };
@@ -13,8 +14,6 @@ type CallInput = {
   followUpDate: string;
   calledAt: string;
 };
-
-const statuses = ["New", "Contacted", "Site visit", "Negotiation", "Closed won", "Closed lost"];
 
 function validId(id: number) {
   return Number.isSafeInteger(id) && id > 0;
@@ -33,7 +32,7 @@ export async function recordLeadCallAction(input: CallInput): Promise<Result> {
     return { error: "Add a short summary of the conversation." };
   }
   if (details.length > 5000) return { error: "Keep the call summary under 5,000 characters." };
-  if (input.leadStatus && !statuses.includes(input.leadStatus)) return { error: "Choose a valid lead status." };
+  if (input.leadStatus && !isLeadStatus(input.leadStatus)) return { error: "Choose a valid lead status." };
   if (input.followUpDate && !/^\d{4}-\d{2}-\d{2}$/.test(input.followUpDate)) {
     return { error: "Choose a valid follow-up date." };
   }
