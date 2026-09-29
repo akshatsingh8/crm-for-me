@@ -26,7 +26,7 @@ export default async function EditClientPage({
 
   const [{ data, error: loadError }, { data: activityData, error: activityError }, { error, edit }] = await Promise.all([
     getSupabase().from("real_estate_clients").select("*").eq("id", id).maybeSingle(),
-    getSupabase().from("lead_activities").select("*").eq("lead_id", id).order("occurred_at", { ascending: false }).order("id", { ascending: false }),
+    getSupabase().from("lead_activities").select("*").eq("lead_id", id).order("created_at", { ascending: false }).order("id", { ascending: false }),
     searchParams,
   ]);
   const client = data as ClientRecord | null;
@@ -91,8 +91,9 @@ export default async function EditClientPage({
                 <div className="activity-entry">
                   <div className="activity-entry-heading">
                     <strong>{activity.kind === "call" ? `Call · ${activity.outcome}` : activity.kind === "whatsapp" ? "WhatsApp conversation" : activity.kind === "site_visit" ? `Site visit · ${activity.outcome ?? "Logged"}` : activity.kind === "follow_up" ? `Follow-up · ${activity.outcome ?? "Logged"}` : activity.kind === "status_change" ? "Lead status updated" : "Note added"}</strong>
-                    <time dateTime={activity.occurred_at}>{formatActivityTime(activity.occurred_at)}</time>
+                    <time dateTime={activity.created_at}>{formatActivityTime(activity.created_at)}</time>
                   </div>
+                  {activity.kind === "site_visit" ? <p>Visit {activity.outcome === "Scheduled" ? "scheduled for" : "held on"} {formatActivityTime(activity.occurred_at)}.</p> : null}
                   {activity.details ? <p>{activity.details}</p> : null}
                 </div>
               </li>

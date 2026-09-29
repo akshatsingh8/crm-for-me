@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 type CallingLead = Pick<ClientRecord,
   "id" | "name" | "phone" | "status" | "requirement" | "property_type" |
   "preferred_location" | "notes" | "created_at" | "calling_status" | "last_called_at"
-> & { lead_activities: Pick<LeadActivity, "id" | "kind" | "outcome" | "details" | "occurred_at">[] };
+> & { lead_activities: Pick<LeadActivity, "id" | "kind" | "outcome" | "details" | "created_at">[] };
 
 const views = [
   { value: "uncalled", label: "Uncalled", status: "Uncalled" },
@@ -39,8 +39,8 @@ export default async function LeadCallingPage({ searchParams }: {
   const active = views.find((item) => item.value === view) ?? views[0];
   const { data, error } = await getSupabase()
     .from("real_estate_clients")
-    .select("id,name,phone,status,requirement,property_type,preferred_location,notes,created_at,calling_status,last_called_at,lead_activities(id,kind,outcome,details,occurred_at)")
-    .order("occurred_at", { referencedTable: "lead_activities", ascending: false })
+    .select("id,name,phone,status,requirement,property_type,preferred_location,notes,created_at,calling_status,last_called_at,lead_activities(id,kind,outcome,details,created_at)")
+    .order("created_at", { referencedTable: "lead_activities", ascending: false })
     .order("id", { referencedTable: "lead_activities", ascending: false })
     .limit(1, { referencedTable: "lead_activities" })
     .order("created_at", { ascending: false });
@@ -104,7 +104,7 @@ export default async function LeadCallingPage({ searchParams }: {
                   <span className="calling-detail-label">Latest activity</span>
                   <div className="calling-detail-heading">
                     <strong>{latestActivity ? activityTitle(latestActivity) : "Lead added"}</strong>
-                    <time dateTime={latestActivity?.occurred_at ?? lead.created_at}>{formatCallTime(latestActivity?.occurred_at ?? lead.created_at)}</time>
+                    <time dateTime={latestActivity?.created_at ?? lead.created_at}>{formatCallTime(latestActivity?.created_at ?? lead.created_at)}</time>
                   </div>
                   <p>{latestActivity?.details || (latestActivity ? "No details recorded." : "Added to the CRM.")}</p>
                 </div>
