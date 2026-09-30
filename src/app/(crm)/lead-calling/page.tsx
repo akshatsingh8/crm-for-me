@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getSupabase, type ClientRecord, type LeadActivity } from "@/lib/supabase";
 import { LeadContactButtons } from "./lead-contact-buttons";
+import { PhoneDisplay } from "../phone-display";
 
 export const dynamic = "force-dynamic";
 
@@ -92,7 +93,7 @@ export default async function LeadCallingPage({ searchParams }: {
                   <Link href={`/clients/${lead.id}`}><h3>{lead.name}</h3></Link>
                   <span className="status">{lead.status ?? "New"}</span>
                 </div>
-                <p className="calling-phone">{lead.phone}</p>
+                <div className="calling-phone"><PhoneDisplay phone={lead.phone} /></div>
                 <div className="calling-meta">
                   <span>{lead.requirement ?? "Requirement pending"}{lead.property_type ? ` · ${lead.property_type}` : ""}</span>
                   {lead.preferred_location ? <span>{lead.preferred_location}</span> : null}

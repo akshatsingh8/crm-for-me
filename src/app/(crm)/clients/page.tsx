@@ -3,6 +3,7 @@ import { loadAllLeads, loadTimelineLeadIds, TIMELINE_TYPES } from "@/lib/lead-da
 import { LEAD_STATUSES, isLeadStatus } from "@/lib/lead-status";
 import { updateClientStatusAction } from "../actions";
 import { LeadContactButtons } from "../lead-calling/lead-contact-buttons";
+import { PhoneDisplay } from "../phone-display";
 
 export const dynamic = "force-dynamic";
 
@@ -126,7 +127,7 @@ export default async function ClientsPage({
               <tbody>
                 {clients.map((client) => (
                   <tr key={client.id}>
-                    <td className="client-cell" data-label="Lead"><Link className="lead-link" href={`/clients/${client.id}`}><strong>{client.name}</strong><small>{client.phone}</small><span>View profile →</span></Link></td>
+                    <td className="client-cell" data-label="Lead"><Link className="lead-link" href={`/clients/${client.id}`}><strong>{client.name}</strong><span>View profile →</span></Link><PhoneDisplay phone={client.phone} compact /></td>
                     <td data-label="Interest"><div className="lead-interest"><strong>{client.requirement || "Not specified"}</strong><small>{[client.property_type, client.preferred_location].filter(Boolean).join(" · ") || "Property details pending"}</small>{client.budget_min !== null || client.budget_max !== null ? <small>{formatBudget(client.budget_min, client.budget_max)}</small> : null}</div></td>
                     <td data-label="Follow-up"><div className="lead-follow-up">{formatDate(client.follow_up_date)}{client.lead_temperature ? <small>{client.lead_temperature} lead</small> : null}</div></td>
                     <td data-label="Stage">

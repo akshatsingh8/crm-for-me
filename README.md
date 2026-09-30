@@ -42,7 +42,7 @@ A lightweight real-estate CRM for capturing property enquiries and keeping follo
    npm run dev
    ```
 
-5. Open `http://localhost:3000` and sign in using the values configured in `CRM_LOGIN_ID` and `CRM_LOGIN_PASSWORD`.
+5. Open `http://localhost:3000` and sign in using any configured login ID and password pair.
 
 ## Environment variables
 
@@ -50,8 +50,9 @@ A lightweight real-estate CRM for capturing property enquiries and keeping follo
 | --- | --- |
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Public Supabase API key |
-| `CRM_LOGIN_ID` | Fixed CRM login ID |
-| `CRM_LOGIN_PASSWORD` | Fixed CRM login password |
+| `CRM_LOGIN_ID` / `CRM_LOGIN_PASSWORD` | Primary CRM login credentials |
+| `CRM_LOGIN_ID_2` / `CRM_LOGIN_PASSWORD_2` | Optional second CRM login credentials |
+| `CRM_LOGIN_ID_3` / `CRM_LOGIN_PASSWORD_3` | Optional third CRM login credentials |
 | `CRM_SESSION_SECRET` | Long random value used to sign login sessions |
 | `CRM_DB_ACCESS_TOKEN` | Private token sent only by server-side Supabase requests |
 

@@ -24,10 +24,16 @@ function safeEqual(left: string, right: string) {
 }
 
 export function credentialsAreValid(id: string, password: string) {
-  const expectedId = process.env.CRM_LOGIN_ID;
-  const expectedPassword = process.env.CRM_LOGIN_PASSWORD;
-  if (!expectedId || !expectedPassword) return false;
-  return safeEqual(id, expectedId) && safeEqual(password, expectedPassword);
+  const credentials = [
+    [process.env.CRM_LOGIN_ID, process.env.CRM_LOGIN_PASSWORD],
+    [process.env.CRM_LOGIN_ID_2, process.env.CRM_LOGIN_PASSWORD_2],
+    [process.env.CRM_LOGIN_ID_3, process.env.CRM_LOGIN_PASSWORD_3],
+  ];
+
+  return credentials.some(([expectedId, expectedPassword]) => {
+    if (!expectedId || !expectedPassword) return false;
+    return safeEqual(id, expectedId) && safeEqual(password, expectedPassword);
+  });
 }
 
 export async function createSession() {

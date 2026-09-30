@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { ReactNode } from "react";
 import { updateClientAction } from "../../actions";
 import { DeleteLeadFormAction } from "../../dashboard/delete-lead-button";
 import { getSupabase, type ClientRecord, type LeadActivity } from "@/lib/supabase";
 import { LeadContactButtons } from "../../lead-calling/lead-contact-buttons";
 import { ActivityNoteForm } from "../../lead-calling/activity-note-form";
+import { PhoneDisplay } from "../../phone-display";
 import { LEAD_STATUSES } from "@/lib/lead-status";
 
 function formatActivityTime(value: string) {
@@ -35,19 +37,19 @@ export default async function EditClientPage({
   if (loadError || !client) notFound();
 
   if (edit !== "1") {
-    const details = [
-      ["Phone", client.phone],
-      ["Email", client.email],
-      ["Requirement", client.requirement],
-      ["Property type", client.property_type],
-      ["Property / project", client.property_project],
-      ["Preferred location", client.preferred_location],
-      ["Minimum budget", client.budget_min ? `₹${new Intl.NumberFormat("en-IN").format(client.budget_min)}` : null],
-      ["Maximum budget", client.budget_max ? `₹${new Intl.NumberFormat("en-IN").format(client.budget_max)}` : null],
-      ["Lead source", client.lead_source],
-      ["Lead temperature", client.lead_temperature],
-      ["Status", client.status],
-      ["Next follow-up", client.follow_up_date ? new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "short", year: "numeric" }).format(new Date(`${client.follow_up_date}T00:00:00`)) : null],
+    const details: Array<{ label: string; value: ReactNode }> = [
+      { label: "Phone", value: <PhoneDisplay phone={client.phone} /> },
+      { label: "Email", value: client.email },
+      { label: "Requirement", value: client.requirement },
+      { label: "Property type", value: client.property_type },
+      { label: "Property / project", value: client.property_project },
+      { label: "Preferred location", value: client.preferred_location },
+      { label: "Minimum budget", value: client.budget_min ? `₹${new Intl.NumberFormat("en-IN").format(client.budget_min)}` : null },
+      { label: "Maximum budget", value: client.budget_max ? `₹${new Intl.NumberFormat("en-IN").format(client.budget_max)}` : null },
+      { label: "Lead source", value: client.lead_source },
+      { label: "Lead temperature", value: client.lead_temperature },
+      { label: "Status", value: client.status },
+      { label: "Next follow-up", value: client.follow_up_date ? new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "short", year: "numeric" }).format(new Date(`${client.follow_up_date}T00:00:00`)) : null },
     ];
 
     return (
@@ -58,7 +60,7 @@ export default async function EditClientPage({
             <div>
               <p className="eyebrow">Lead profile</p>
               <h1>{client.name}</h1>
-              <p className="muted">{client.phone}{client.email ? ` · ${client.email}` : ""}</p>
+              <p className="muted profile-phone"><PhoneDisplay phone={client.phone} />{client.email ? ` · ${client.email}` : ""}</p>
             </div>
             <div className="profile-actions">
               <LeadContactButtons leadId={client.id} name={client.name} phone={client.phone} currentStatus={client.status} />
@@ -66,7 +68,7 @@ export default async function EditClientPage({
             </div>
           </header>
           <div className="profile-details">
-            {details.map(([label, value]) => (
+            {details.map(({ label, value }) => (
               <div className="profile-detail" key={label}>
                 <span>{label}</span>
                 <strong>{value || "Not specified"}</strong>
