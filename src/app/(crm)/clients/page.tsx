@@ -28,11 +28,12 @@ function formatBudget(min: number | null, max: number | null) {
 export default async function ClientsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ created?: string; updated?: string; deleted?: string; error?: string; q?: string; status?: string; timeline?: string; activity?: string; source?: string; temperature?: string }>;
+  searchParams: Promise<{ created?: string; updated?: string; deleted?: string; error?: string; q?: string; notes?: string; status?: string; timeline?: string; activity?: string; source?: string; temperature?: string }>;
 }) {
-  const { created, updated, deleted, error: actionError, q, status, timeline, activity, source, temperature } = await searchParams;
+  const { created, updated, deleted, error: actionError, q, notes, status, timeline, activity, source, temperature } = await searchParams;
   const { leads, error } = await loadAllLeads();
   const search = (q ?? "").trim().toLowerCase().slice(0, 120);
+  const notesSearch = (notes ?? "").trim().toLowerCase().slice(0, 120);
   const statusFilter = isLeadStatus(status ?? "") ? status : "";
   const timelineSearch = (timeline ?? "").trim().toLowerCase().slice(0, 120);
   const activityFilter = TIMELINE_TYPES.some((item) => item.value === activity) ? activity! : "";
@@ -40,12 +41,13 @@ export default async function ClientsPage({
   const temperatures = ["Hot", "Warm", "Cold"];
   const sourceFilter = sources.includes(source ?? "") ? source : "";
   const temperatureFilter = temperatures.includes(temperature ?? "") ? temperature : "";
-  const activeFilterCount = [search, statusFilter, timelineSearch, activityFilter, sourceFilter, temperatureFilter].filter(Boolean).length;
+  const activeFilterCount = [search, notesSearch, statusFilter, timelineSearch, activityFilter, sourceFilter, temperatureFilter].filter(Boolean).length;
   const timelineMatches = timelineSearch || activityFilter ? await loadTimelineLeadIds(timelineSearch, activityFilter) : null;
   const clients = leads.filter((lead) => {
     if (statusFilter && (lead.status ?? "New") !== statusFilter) return false;
     if (sourceFilter && lead.lead_source !== sourceFilter) return false;
     if (temperatureFilter && lead.lead_temperature !== temperatureFilter) return false;
+    if (notesSearch && !(lead.notes ?? "").toLowerCase().includes(notesSearch)) return false;
     if (timelineMatches && !timelineMatches.error && !timelineMatches.ids.has(lead.id)) return false;
     return !search || [lead.name, lead.phone, lead.email ?? ""].some((value) => value.toLowerCase().includes(search));
   });
@@ -85,6 +87,8 @@ export default async function ClientsPage({
         <form className="lead-filter-bar" action="/clients">
           <label className="sr-only" htmlFor="lead-search">Search leads</label>
           <input id="lead-search" name="q" type="search" placeholder="Search name, phone, or email" defaultValue={q ?? ""} />
+          <label className="sr-only" htmlFor="lead-notes">Search lead notes</label>
+          <input id="lead-notes" name="notes" type="search" placeholder="Search lead notes" defaultValue={notes ?? ""} maxLength={120} />
           <label className="sr-only" htmlFor="lead-status">Filter by status</label>
           <select id="lead-status" name="status" defaultValue={statusFilter}>
             <option value="">All statuses</option>
@@ -108,7 +112,7 @@ export default async function ClientsPage({
             {TIMELINE_TYPES.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
           </select>
           <button className="button button-secondary" type="submit">Filter</button>
-          {search || statusFilter || timelineSearch || activityFilter || sourceFilter || temperatureFilter ? <Link className="text-button" href="/clients">Clear</Link> : null}
+          {search || notesSearch || statusFilter || timelineSearch || activityFilter || sourceFilter || temperatureFilter ? <Link className="text-button" href="/clients">Clear</Link> : null}
         </form>
         </details>
         {clients.length === 0 && !error ? (
